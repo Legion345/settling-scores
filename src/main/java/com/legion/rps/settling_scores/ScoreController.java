@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class ScoreController {
 
+	static Score score = new Score(30, 20, 10);	
+
 	@GetMapping("/health-check")
 	public String getHealthCheck() {
 		return "Situation Normal All Fired Up!";
