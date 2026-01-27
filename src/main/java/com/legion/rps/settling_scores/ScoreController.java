@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
 @CrossOrigin
@@ -15,6 +16,7 @@ public class ScoreController {
 	public String getHealthCheck() {
 		return "Situation Normal All Fired Up!";
 	}
+
 
 	@GetMapping("/score")
 	public Score getScore() {
@@ -31,6 +33,21 @@ public class ScoreController {
 		}
 		return score.losses;
 	}
+
+	@PostMapping("/score/{increasewinslossesorties}")
+	public int postWinsLossesOrTies(@PathVariable String increasewinslossesorties) {
+		if (increasewinslossesorties.equalsIgnoreCase("wins")) {
+			score.wins++;
+			return score.wins;
+		}
+		if (increasewinslossesorties.equalsIgnoreCase("ties")) {
+			score.ties++;
+			return score.ties;
+		}
+		score.losses++;
+		return score.losses;
+	}
+
 /*
 	@GetMapping("/score/wins")
 	public int getWins() {
