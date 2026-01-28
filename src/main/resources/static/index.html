@@ -1,0 +1,65 @@
+<html>
+	<head>
+		<title>Rock Paper Scissors App!</title>
+	</head>
+	<body>
+		Which one will it be? <br/><br/>
+		<a href="#" onclick="playRoshambo('rock')"> rock </a> &nbsp; &nbsp;
+		<a href="#" onclick="playRoshambo('paper')"> paper </a> &nbsp; &nbsp;
+		<a href="#" onclick="playRoshambo('scissors')"> scissors </a> &nbsp; &nbsp;
+		
+		<hr/><br/>
+
+		<i><div id="results"></div></i>
+		<br/>
+		<span id="wins"></span>
+		<span id="losses"></span>
+		<span id="ties"></span>
+	</body>
+	<script>
+		
+		playRoshambo = async function(clientGesture) {
+			try {
+
+				const choices = ['rock', 'paper', 'scissors'];
+				const computerGesture = choices[Math.floor(Math.random() * 3)];
+
+				let result, incrementPath;
+				if (clientGesture === computerGesture) {
+					result = "tie";
+					incrementPath = "/score/ties";
+				} else if (
+					(clientGesture === 'rock' && computerGesture === 'scissors') ||
+					(clientGesture === 'paper' && computerGesture === 'rock') ||
+					(clientGesture === 'scissors' && computerGesture === 'paper')
+				) {
+					result = "win";
+					incrementPath = "/score/wins";
+				} else {
+					result = "loss";
+					incrementPath = "/score/losses";
+				}
+				// POST to increment score
+				const postResponse = await fetch("http://localhost:8080" + incrementPath, { method: "POST" });
+				if (!postResponse.ok) throw new Error("Failed to increment score");
+
+				// GET the updated score
+				const getResponse = await fetch("http://localhost:8080/score");
+				if (!getResponse.ok) throw new Error("Failed to fetch updated score");
+				const updatedScore = await getResponse.json();
+
+				document.getElementById('results').innerHTML = "You chose " + clientGesture + ".<br/>Computer chose " + computerGesture + ". <br/>Result: " + result;
+				document.getElementById('wins').innerHTML = " <b>Wins: </b> " + updatedScore.wins;
+				document.getElementById('losses').innerHTML = " <b>Losses: </b> " + updatedScore.losses;
+				document.getElementById('ties').innerHTML = " <b>Ties: </b> " + updatedScore.ties;
+
+
+			} catch (e) {
+				console.log(e.message);
+				document.getElementById('results').innerHTML = "Error: " + e.message;
+			}
+
+		}
+
+	</script>
+</html>
