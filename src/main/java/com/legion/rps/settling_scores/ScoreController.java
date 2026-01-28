@@ -4,17 +4,27 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @CrossOrigin
 public class ScoreController {
 
-	static Score score = new Score(30, 20, 10);	
+	static Score score = new Score(30, 20, 10);
+
+	@PatchMapping("/score/wins")
+	public Score updateWins(@RequestParam(name="new-value")int newValue) {
+		score.wins = newValue;
+		return score;
+	}
 
 	@GetMapping("/health-check")
 	public String getHealthCheck() {
 		return "Situation Normal All Fired Up!";
 	}
+
 
 	@GetMapping("/score")
 	public Score getScore() {
@@ -31,19 +41,19 @@ public class ScoreController {
 		}
 		return score.losses;
 	}
-/*
-	@GetMapping("/score/wins")
-	public int getWins() {
-		return score.wins;
-	}
-	
-	@GetMapping("/score/losses")
-	public int getLosses() {
+
+	@PostMapping("/score/{increasewinslossesorties}")
+	public int postWinsLossesOrTies(@PathVariable String increasewinslossesorties) {
+		if (increasewinslossesorties.equalsIgnoreCase("wins")) {
+			score.wins++;
+			return score.wins;
+		}
+		if (increasewinslossesorties.equalsIgnoreCase("ties")) {
+			score.ties++;
+			return score.ties;
+		}
+		score.losses++;
 		return score.losses;
 	}
 
-	@GetMapping("/score/ties")
-	public int getTies() {
-		return score.ties;
-	}*/
 }
